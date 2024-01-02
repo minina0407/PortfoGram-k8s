@@ -1,0 +1,5 @@
+apiVersion: v2
+name: localportfogram
+version: 0.0.1-SNAPSHOT
+description: Chart for applications based on Spring (Boot)
+type: application
