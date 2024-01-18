@@ -1,3 +1,4 @@
+#tempo Chart.yaml
 apiVersion: v2
 name: tempo
 version: 1.0.0-SNAPSHOT
@@ -8,3 +9,6 @@ dependencies:
   - name: tempo
     version: 0.16.2
     repository: https://grafana.github.io/helm-charts
+
+
+

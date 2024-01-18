@@ -55,11 +55,11 @@ kube-prometheus-stack:
             lokiSearch: true
           serviceMap:
             datasourceUid: 'prometheus'
-    # Make anon login be the Admin for demo purposes! NEVER USE IN PRODUCTION SYSTEMS!
     grafana.ini:
-      auth:
-        disable_login_form: true
+      security:
+        disable_login_form: false
       auth.anonymous:
         enabled: true
-        org_name: "Main Org."
-        org_role: Admin
+    nodeSelector:
+      hostname: worker-2
+
