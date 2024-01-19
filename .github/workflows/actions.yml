@@ -26,5 +26,5 @@ jobs:
       - name: 서버 이미지 빌드 및 푸시
         id: build_and_push_server
         run: |
-          docker build -f Dockerfile.server -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest .
+          docker build -f Dockerfile -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest .
           docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest
