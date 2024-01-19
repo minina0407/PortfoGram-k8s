@@ -10,9 +10,6 @@ jobs:
   ci_cd_pipeline:
     runs-on: self-hosted
     steps:
-      - name: get time
-        id: time
-        run: echo "::set-output name=time::$(date +%Y-%m-%d-%H-%M-%S)"
 
       - name: source code checkout
         uses: actions/checkout@v3
