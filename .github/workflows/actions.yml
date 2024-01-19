@@ -5,7 +5,7 @@ on:
       - main
 env:
   DOCKER_REGISTRY: docker.io
-  IMAGE_REPO: minimeisme/local-spring-portfogram:latest
+  IMAGE_REPO: minimeisme/local-spring-portfogram
 jobs:
   ci_cd_pipeline:
     runs-on: ubuntu-latest
