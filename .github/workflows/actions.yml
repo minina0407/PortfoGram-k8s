@@ -16,9 +16,6 @@ jobs:
       - name: source code checkout
         uses: actions/checkout@v3
 
-      - name: Set working directory to spring-boot-app
-        run: cd spring-boot-app
-
       - name: Docker 레지스트리 로그인
         uses: docker/login-action@v1
         with:
