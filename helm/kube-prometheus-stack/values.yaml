@@ -7,6 +7,9 @@ kube-prometheus-stack:
       enableFeatures:
         - exemplar-storage
   grafana:
+    service:
+     type: NodePort
+     nodePort: 31000
     sidecar:
       dashboards:
         searchNamespace: ALL
