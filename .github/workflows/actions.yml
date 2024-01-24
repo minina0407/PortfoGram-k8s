@@ -1,4 +1,4 @@
-name: BuildAndPushImagesAndUpdateArgoCDConfig
+name: BuildAndPushImagesAndTriggerManifestUpdate
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 env:
   DOCKER_REGISTRY: docker.io
-  IMAGE_REPO: minimeisme/local-spring-portfogram
+  IMAGE_REPO: minimeisme/portfogram-argocd-k8s
 
 jobs:
   ci_cd_pipeline:
@@ -28,3 +28,10 @@ jobs:
         run: |
           docker build -f Dockerfile -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest .
           docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest
+
+      - name: Manifest Repository workflow 트리거
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          repository: https://github.com/minina0407/portfogram-mainfest
+          event-type: update-manifest
+          client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:latest"}'
