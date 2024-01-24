@@ -32,6 +32,6 @@ jobs:
       - name: Manifest Repository workflow 트리거
         uses: peter-evans/repository-dispatch@v2
         with:
-          repository: https://github.com/minina0407/portfogram-mainfest.git
+          repository: minina0407/portfogram-mainfest
           event-type: update-manifest
           client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:latest"}'
