@@ -35,3 +35,4 @@ jobs:
           repository: minina0407/portfogram-mainfest
           event-type: update-manifest
           client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:latest"}'
+          token: ${{ env.MANIFEST_REPO_TOKEN }}
