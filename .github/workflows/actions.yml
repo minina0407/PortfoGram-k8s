@@ -26,13 +26,14 @@ jobs:
       - name: 서버 이미지 빌드 및 푸시
         id: build_and_push_server
         run: |
-          docker build -f Dockerfile -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest .
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:latest
+          COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          docker build -f Dockerfile -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:${COMMIT_HASH} .
+          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:${COMMIT_HASH}
 
       - name: Manifest Repository workflow 트리거
         uses: peter-evans/repository-dispatch@v2
         with:
           repository: minina0407/portfogram-mainfest
           event-type: update-manifest
-          client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:latest"}'
+          client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:${COMMIT_HASH}"}'
           token: ${{ secrets.MANIFEST_REPO_TOKEN }}
