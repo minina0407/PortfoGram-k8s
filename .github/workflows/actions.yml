@@ -1,3 +1,4 @@
+# Application Repository의 workflow
 name: BuildAndPushImagesAndTriggerManifestUpdate
 
 on:
@@ -35,5 +36,5 @@ jobs:
         with:
           repository: minina0407/portfogram-mainfest
           event-type: update-manifest
-          client-payload: '{"image_tag": "${{ env.IMAGE_REPO }}:${COMMIT_HASH}"}'
+          client-payload: '{"commit_hash": "${COMMIT_HASH}"}'
           token: ${{ secrets.MANIFEST_REPO_TOKEN }}
