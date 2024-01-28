@@ -28,8 +28,14 @@ jobs:
         id: build_and_push_server
         run: |
           COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
-          docker build -f Dockerfile -t ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:${COMMIT_HASH} .
-          docker push ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_REPO }}:${COMMIT_HASH}
+          TAG="${COMMIT_HASH}" # 원하는 대로 태그를 지정할 수 있습니다.
+          
+          
+          docker build -f Dockerfile -t   minimeisme/portfogram-argocd-k8s:${TAG} .
+          docker push minimeisme/portfogram-argocd-k8s:${TAG}
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "::set-output name=TAG::${TAG}"
+          
 
       - name: Manifest Repository workflow 트리거
         uses: peter-evans/repository-dispatch@v2
