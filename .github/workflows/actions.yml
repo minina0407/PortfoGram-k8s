@@ -13,9 +13,6 @@ env:
 jobs:
   ci_cd_pipeline:
     runs-on: ubuntu-latest
-    env:
-      MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
-      MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
 
     steps:
       - name: source code checkout
@@ -34,9 +31,7 @@ jobs:
           COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           TAG="${COMMIT_HASH}" # 원하는 대로 태그를 지정할 수 있습니다.
           
-          docker build -f Dockerfile  --build-arg MYSQL_USERNAME="${{env.MYSQL_USERNAME}}"  \
-          --build-arg MYSQL_PASSWORD="${{env.MYSQL_PASSWORD}}" \
-          -t ${IMAGE_REPO}:${TAG}  .
+          docker build -f Dockerfile  -t ${IMAGE_REPO}:${TAG}  .
       
           docker push minimeisme/portfogram-argocd-k8s:${TAG}
           echo "TAG=${TAG}" >> $GITHUB_ENV

@@ -7,11 +7,6 @@ RUN curl --silent --fail -L "https://github.com/open-telemetry/opentelemetry-jav
     -o "$HOME/opentelemetry-javaagent.jar"
 
 FROM gradle:7.6.1-jdk17 AS build
-ARG MYSQL_USERNAME
-ARG MYSQL_PASSWORD
-
-ENV SPRING_DATASOURCE_USERNAME=$MYSQL_USERNAME
-ENV SPRING_DATASOURCE_PASSWORD=$MYSQL_PASSWORD
 COPY --chown=gradle:gradle spring-boot-app /home/gradle/src
 RUN chmod +x /home/gradle/src/gradlew
 WORKDIR /home/gradle/src
