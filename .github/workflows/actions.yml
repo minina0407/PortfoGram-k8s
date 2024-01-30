@@ -31,10 +31,10 @@ jobs:
           TAG="${COMMIT_HASH}" # 원하는 대로 태그를 지정할 수 있습니다.
           
           
-          docker buildx build -f Dockerfile -t minimeisme/portfogram-argocd-k8s:${TAG} \
+          docker buildx build -f Dockerfile -t ${IMAGE_REPO}:${TAG} . \
           --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
           --build-arg MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
-          --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} .
+          --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
           
           docker push minimeisme/portfogram-argocd-k8s:${TAG}
           echo "TAG=${TAG}" >> $GITHUB_ENV
