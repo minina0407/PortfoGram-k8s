@@ -32,9 +32,10 @@ jobs:
           
           
           docker build -f Dockerfile -t minimeisme/portfogram-argocd-k8s:${TAG} \
-            --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
-            --build-arg MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
-            --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} .
+          --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
+          --build-arg MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
+          --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} .
+          
           docker push minimeisme/portfogram-argocd-k8s:${TAG}
           echo "TAG=${TAG}" >> $GITHUB_ENV
           echo "::set-output name=TAG::${TAG}"
