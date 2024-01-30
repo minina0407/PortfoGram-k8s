@@ -25,6 +25,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: 서버 이미지 빌드 및 푸시
+        shell: bash -e {0}
         id: build_and_push_server
         run: |
           COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
@@ -35,6 +36,7 @@ jobs:
           --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
           --build-arg MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
           --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+
           
           docker push minimeisme/portfogram-argocd-k8s:${TAG}
           echo "TAG=${TAG}" >> $GITHUB_ENV
