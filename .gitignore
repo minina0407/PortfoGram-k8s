@@ -36,4 +36,3 @@ out/
 ### VS Code ###
 .vscode/
 
-/spring-boot-app/src/main/resources/application.properties
