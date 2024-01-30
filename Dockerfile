@@ -1,4 +1,15 @@
+
+
+
 FROM curlimages/curl:7.81.0 AS download
+ARG MYSQL_URL
+ARG MYSQL_USERNAME
+ARG MYSQL_PASSWORD
+
+ENV SPRING_DATASOURCE_URL=$MYSQL_URL
+ENV SPRING_DATASOURCE_USERNAME=$MYSQL_USERNAME
+ENV SPRING_DATASOURCE_PASSWORD=$MYSQL_PASSWORD
+
 ARG OTEL_AGENT_VERSION="1.18.0"
 RUN curl --silent --fail -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
     -o "$HOME/opentelemetry-javaagent.jar"
