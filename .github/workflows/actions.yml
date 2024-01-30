@@ -24,15 +24,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set application properties
+        run: |
+          touch ./src/main/resources/application.properties
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+          cat ./src/main/resources/application.properties
+
       - name: 서버 이미지 빌드 및 푸시
         id: build_and_push_server
         run: |
           COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           TAG="${COMMIT_HASH}" # 원하는 대로 태그를 지정할 수 있습니다.
-          docker build -f Dockerfile -t ${IMAGE_REPO}:${GITHUB_SHA}  
-          --build-arg MYSQL_HOST=${{ secrets.MYSQL_HOST }}
-          --build-arg MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
-          --build-arg MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} .
+          docker build -f Dockerfile -t ${IMAGE_REPO}:${GITHUB_SHA}  .
       
           docker push minimeisme/portfogram-argocd-k8s:${TAG}
           echo "TAG=${TAG}" >> $GITHUB_ENV
