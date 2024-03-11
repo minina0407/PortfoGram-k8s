@@ -23,7 +23,6 @@ import static org.springframework.data.redis.serializer.RedisSerializationContex
 
 @Configuration
 public class RedisConfig {
-
     @Value("${spring.redis.port}")
     private int redisPort;
 
@@ -32,8 +31,6 @@ public class RedisConfig {
 
     @Value("${spring.redis.password}")
     private String redisPassword;
-
-
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -55,8 +52,6 @@ public class RedisConfig {
                 .build();
     }
 
-
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -66,7 +61,6 @@ public class RedisConfig {
 
         return objectMapper;
     }
-
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
