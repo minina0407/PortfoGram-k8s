@@ -3,6 +3,7 @@ package com.api.localportfogram.exception.handler;
 import com.api.localportfogram.exception.dto.BaseException;
 import com.api.localportfogram.exception.dto.ExceptionEnum;
 import com.api.localportfogram.exception.dto.Response;
+import jakarta.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.servlet.ServletException;
 
 
 @RestControllerAdvice

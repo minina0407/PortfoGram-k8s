@@ -1,20 +1,11 @@
 package com.api.localportfogram.chat.service;
 
-import com.api.localportfogram.chat.dto.ChatMessage;
-import com.api.localportfogram.chat.entity.ChatMessageEntity;
-import com.api.localportfogram.chat.entity.ChatRoomEntity;
 import com.api.localportfogram.chat.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.time.LocalDateTime.now;
 
 @Slf4j
 @Service

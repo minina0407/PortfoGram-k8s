@@ -1,12 +1,11 @@
 package com.api.localportfogram.chat.entity;
 
 import com.api.localportfogram.chat.dto.ChatMessage;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

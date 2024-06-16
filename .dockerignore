@@ -1,0 +1,35 @@
+target/
+build/
+
+# Gradle wrapper artifacts
+!.gradle/wrapper/gradle-wrapper.jar
+
+# Packaging artifacts
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# IDE settings
+.idea/
+*.iml
+*.ipr
+*.iws
+
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+
+# Compiled source #
+*.class
+*.o
+*.obj

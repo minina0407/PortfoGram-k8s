@@ -4,12 +4,12 @@ package com.api.localportfogram.portfolio.dto;
 import com.api.localportfogram.comment.dto.Comment;
 import com.api.localportfogram.portfolio.entity.PortfolioEntity;
 import com.api.localportfogram.reply.dto.Reply;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;

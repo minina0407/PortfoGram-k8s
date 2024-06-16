@@ -5,7 +5,8 @@ import com.api.localportfogram.auth.enums.AuthEnums;
 import com.api.localportfogram.chat.entity.UserChatRoomEntity;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity

@@ -1,8 +1,4 @@
 package com.api.localportfogram.portfolio.controller;
-
-
-import javax.validation.Valid;
-
 import com.api.localportfogram.Image.service.PortfolioImageService;
 import com.api.localportfogram.comment.dto.Comments;
 import com.api.localportfogram.comment.service.CommentService;
@@ -18,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +36,7 @@ import java.util.List;
 @RequestMapping("/api/v1/portfolios")
 @Tag(name = "포트폴리오 API", description = "포트폴리오 관련 API")
 public class PortfolioController {
+
     private final UserService userService;
     private final PortfolioService portfolioService;
     private final PortfolioImageService portfolioImageService;
