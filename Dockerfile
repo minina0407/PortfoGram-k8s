@@ -1,5 +1,5 @@
 FROM --platform=linux/amd64 alpine:3.15 AS DOWNLOAD
-ARG OTEL_AGENT_VERSION="1.18.0"
+ARG OTEL_AGENT_VERSION="1.41.0"
 RUN apk --no-cache add curl \
     && curl --silent --fail -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
     -o "/tmp/opentelemetry-javaagent.jar"
