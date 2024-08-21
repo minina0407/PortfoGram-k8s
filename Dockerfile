@@ -4,9 +4,6 @@ RUN apk --no-cache add curl \
     && curl --silent --fail -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
     -o "/tmp/opentelemetry-javaagent.jar"
 
-    && curl --silent --fail -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.41.0/opentelemetry-javaagent.jar" \
-    -o "/tmp/opentelemetry-javaagent.jar"
-
 FROM gradle:7.6.1-jdk17 AS BUILD
 ARG MYSQL_USERNAME
 ARG MYSQL_PASSWORD
