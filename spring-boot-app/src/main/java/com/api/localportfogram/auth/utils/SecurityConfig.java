@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**", "/ws/**", "/actuator/**").permitAll()
+                        .requestMatchers("/api/**", "/ws/**", "/actuator/**","**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -59,7 +59,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
     @Configuration
     public static class SwaggerConfiguration implements WebMvcConfigurer {
