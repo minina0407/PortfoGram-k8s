@@ -9,6 +9,7 @@ import com.api.localportfogram.exception.dto.ExceptionEnum;
 import com.api.localportfogram.user.dto.Profile;
 import com.api.localportfogram.user.dto.User;
 import com.api.localportfogram.user.entity.UserEntity;
+import com.api.localportfogram.user.repository.FollowRepository;
 import com.api.localportfogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,8 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-   private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final FollowRepository followRepository;
 
 
     @Transactional(readOnly = true)
@@ -35,8 +37,8 @@ public class UserService {
 
         return Profile.builder()
                 .nickname(user.getNickname())
-                .followers(user.getFollowers().stream().count())
-                .following(user.getFollowings().stream().count())
+                .followers(followRepository.countByFollowing(user))
+                .following(followRepository.countByFollower(user))
                 .build();
     }
 
@@ -58,7 +60,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "이미 가입되어 있는 이메일입니다.");
         }
@@ -75,19 +77,22 @@ public class UserService {
                 .role(AuthEnums.ROLE.ROLE_USER)
                 .build();
 
-        userRepository.save(userEntity);
+        UserEntity savedUser = userRepository.save(userEntity);
+        return User.fromEntity(savedUser);
     }
 
     public Long getUserIdFromToken(String token) {
         Authentication authentication = jwtTokenProvider.getAuthentication(token);
         String name = authentication.getName();
-        Optional<UserEntity> user = userRepository.findByEmail(name);
-        return user.get().getId();
+        UserEntity user = userRepository.findByEmail(name)
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "토큰에 해당하는 유저를 찾을 수 없습니다."));
+        return user.getId();
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
-        UserEntity userEntity = userRepository.findById(memberId)
+    public void deleteMember() {
+        UserEntity userEntity = SecurityUtil.getCurrentUsername()
+                .flatMap(userRepository::findByEmail)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND,"유저를 찾을 수 없습니다."));
 
         userRepository.delete(userEntity);

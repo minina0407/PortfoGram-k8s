@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.api.localportfogram.auth.enums.AuthEnums.ROLE.ROLE_USER;
+
 @Data
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -28,6 +29,7 @@ public class TokenDetails implements UserDetails {
     private AuthEnums.ROLE role;
     private String refreshToken;
     private List<GrantedAuthority> authorities;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role != null) {
@@ -66,6 +68,7 @@ public class TokenDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
     public static boolean isUser(TokenDetails tokenDetails) {
         return tokenDetails != null && ROLE_USER.equals(tokenDetails.getRole());
     }

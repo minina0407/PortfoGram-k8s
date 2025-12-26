@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "포트폴리오 API", description = "포트폴리오 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/portfolios")
@@ -88,7 +87,7 @@ public class PortfolioController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @Operation(summary = "포트폴리오 저장", description = "포트폴리오를 저장합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "포트폴리오 저장 성공",
+            @ApiResponse(responseCode = "201", description = "포트폴리오 저장 성공",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Portfolio.class))}),
             @ApiResponse(responseCode = "400", description = "잘못된 요청: 이미지 파일이나 내용이 비어 있습니다."),
@@ -99,14 +98,15 @@ public class PortfolioController {
             @RequestParam(value = "images", required = true) List<MultipartFile> imageFiles,
             @RequestParam(value = "content", required = true) String content) {
 
-        portfolioService.savePortfolio(content, imageFiles);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Portfolio savedPortfolio = portfolioService.savePortfolio(content, imageFiles);
+        return new ResponseEntity<>(savedPortfolio, HttpStatus.CREATED);
     }
 
     @PostMapping("/{portfolioId}/likes")
     @Operation(summary = "포트폴리오 좋아요", description = "특정 포트폴리오에 좋아요를 추가합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "포트폴리오 좋아요 추가 성공"),
+            @ApiResponse(responseCode = "201", description = "포트폴리오 좋아요 추가 성공"),
+            @ApiResponse(responseCode = "400", description = "이미 좋아요를 눌렀습니다."),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다."),
             @ApiResponse(responseCode = "403", description = "접근 권한이 없습니다."),
             @ApiResponse(responseCode = "404", description = "포트폴리오를 찾을 수 없습니다.")
@@ -115,16 +115,16 @@ public class PortfolioController {
     public ResponseEntity<PortfolioLike> likePortfolio(
             @PathVariable("portfolioId") Long portfolioId
     ) {
-        portfolioLikeService.likePortfolio(portfolioId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        PortfolioLike portfolioLike = portfolioLikeService.likePortfolio(portfolioId);
+        return new ResponseEntity<>(portfolioLike, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/images/{image-id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/images/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
     @Operation(summary = "포트폴리오 이미지 조회", description = "포트폴리오 이미지를 조회합니다.")
     public ResponseEntity<byte[]> getPortfolioImage(
-            @PathVariable("image-id") Long Id
+            @PathVariable("imageId") Long imageId
     ) {
-        byte[] image = portfolioImageService.getByName(Id);
+        byte[] image = portfolioImageService.getByName(imageId);
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
@@ -161,20 +161,20 @@ public class PortfolioController {
             @PathVariable("portfolioId") Long portfolioId,
             @Valid @RequestBody Portfolio portfolio
     ) {
-        portfolioService.updatePortfolio(portfolioId, portfolio);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Portfolio updatedPortfolio = portfolioService.updatePortfolio(portfolioId, portfolio);
+        return new ResponseEntity<>(updatedPortfolio, HttpStatus.OK);
     }
 
     @DeleteMapping("/{portfolioId}")
     @Operation(summary = "포트폴리오 삭제", description = "특정 포트폴리오를 삭제합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "포트폴리오 삭제 성공"),
+            @ApiResponse(responseCode = "204", description = "포트폴리오 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "포트폴리오를 찾을 수 없습니다.")})
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity deletePortfolio(
+    public ResponseEntity<Void> deletePortfolio(
             @PathVariable("portfolioId") Long portfolioId
     ) {
         portfolioService.deletePortfolio(portfolioId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

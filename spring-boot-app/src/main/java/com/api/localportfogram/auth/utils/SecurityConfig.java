@@ -5,34 +5,32 @@ import com.api.localportfogram.auth.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.PathResourceResolver;
-
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@Component
+@EnableMethodSecurity // @EnableGlobalMethodSecurity is deprecated
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CorsFilter corsFilter;
+
+    // Swagger-ui v3 경로
+    private static final String[] SWAGGER_URL_PATHS = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,34 +46,25 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**", "/ws/**", "/actuator/**","**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()
+                                // Swagger UI 경로 허용
+                                //     .requestMatchers(SWAGGER_URL_PATHS).permitAll()
+                                // 기존의 다른 허용 경로들
+                                .anyRequest().permitAll()
+                        //    .requestMatchers("/api/v1/portfolios/**").permitAll()
+                        //    .requestMatchers("/**").permitAll()
+                        ///   .requestMatchers("/api/v1/auth/**", "/api/v1/users").permitAll() // 예: 로그인, 회원가입
+                        //    .requestMatchers("/ws/**", "/actuator/**").permitAll()
+                        // 나머지 요청은 인증 필요
+                        //    .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 );
 
-        return http.build();
-    }
+        // JWT 필터 적용 (이 부분이 누락되었을 수 있습니다. JwtSecurityConfig 클래스를 만들어 적용하는 것이 일반적입니다.)
+        // http.apply(new JwtSecurityConfig(jwtTokenProvider));
 
-    @Configuration
-    public static class SwaggerConfiguration implements WebMvcConfigurer {
-        @Override
-        public void addResourceHandlers(ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/swagger-ui/**")
-                    .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                    .resourceChain(false)
-                    .addResolver(new PathResourceResolver() {
-                        @Override
-                        protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                            Resource requestedResource = location.createRelative(resourcePath);
-                            return requestedResource.exists() && requestedResource.isReadable()
-                                    ? requestedResource
-                                    : new ClassPathResource("/META-INF/resources/webjars/springfox-swagger-ui/index.html");
-                        }
-                    });
-        }
+        return http.build();
     }
 }

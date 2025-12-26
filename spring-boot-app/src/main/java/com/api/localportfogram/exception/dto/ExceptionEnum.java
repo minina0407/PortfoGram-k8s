@@ -13,7 +13,6 @@ public enum ExceptionEnum {
     RESPONSE_TOKEN_INVALID("401", "유효한 토큰이 아닙니다.", HttpStatus.UNAUTHORIZED),
     RESPONSE_NOT_FOUND("404", "대상을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     RESPONSE_INTERNAL_SEVER_ERROR("502", "서버 내부 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-
     private final String code;
     private final String reason;
     private final HttpStatus status;

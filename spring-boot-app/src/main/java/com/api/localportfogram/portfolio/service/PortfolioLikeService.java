@@ -2,6 +2,7 @@ package com.api.localportfogram.portfolio.service;
 
 import com.api.localportfogram.exception.dto.BadRequestException;
 import com.api.localportfogram.exception.dto.ExceptionEnum;
+import com.api.localportfogram.portfolio.dto.PortfolioLike;
 import com.api.localportfogram.portfolio.entity.PortfolioEntity;
 import com.api.localportfogram.portfolio.entity.PortfolioLikeEntity;
 import com.api.localportfogram.portfolio.repository.PortfolioLikeRepository;
@@ -24,7 +25,7 @@ public class PortfolioLikeService {
     private final UserService userService;
 
     @Transactional
-    public void likePortfolio(Long portfolioId) {
+    public PortfolioLike likePortfolio(Long portfolioId) {
         if (portfolioId == null) {
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "포트폴리오를 찾을 수 없습니다");
         }
@@ -41,13 +42,24 @@ public class PortfolioLikeService {
                     .user(userEntity)
                     .portfolio(PortfolioEntity.builder().id(portfolioId).build())
                     .build();
-            portfolioLikeRepository.save(portfolioLikeEntity);
+            PortfolioLikeEntity savedLike = portfolioLikeRepository.save(portfolioLikeEntity);
 
             redisTemplate.opsForSet().add(redisKey, String.valueOf(portfolioId));
             redisTemplate.expire(redisKey, Duration.ofDays(7));
 
             redisTemplate.opsForSet().add(modifiedUsersKey, String.valueOf(userEntity.getId()));
+
+            return PortfolioLike.builder()
+                    .id(savedLike.getId())
+                    .userId(savedLike.getUser().getId())
+                    .portfolioId(savedLike.getPortfolio().getId())
+                    .build();
         }
+        // 이미 좋아요를 누른 경우 null 또는 예외 처리를 할 수 있습니다.
+        // 여기서는 간단히 null을 반환하거나, 혹은 기존 좋아요 정보를 반환할 수도 있습니다.
+        // 혹은 BadRequestException을 던져 "이미 좋아요를 눌렀습니다"라고 알릴 수 있습니다.
+        // 여기서는 간단하게 예외를 던지겠습니다.
+        throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "이미 좋아요를 눌렀습니다.");
     }
 
     @Transactional

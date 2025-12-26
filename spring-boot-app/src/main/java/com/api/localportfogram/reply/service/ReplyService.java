@@ -34,7 +34,7 @@ public class ReplyService {
     }
 
     @Transactional
-    public void createReply(Reply reply) {
+    public Reply createReply(Reply reply) {
         CommentEntity comment = commentService.getCommentById(reply.getCommentId());
 
         UserEntity user = userService.getMyUserWithAuthorities();
@@ -46,7 +46,8 @@ public class ReplyService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        replyRepository.save(replyEntity);
+        ReplyEntity savedReply = replyRepository.save(replyEntity);
+        return Reply.fromEntity(savedReply);
     }
 
     @Transactional

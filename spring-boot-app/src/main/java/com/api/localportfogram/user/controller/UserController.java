@@ -66,26 +66,24 @@ public class UserController {
     @PostMapping
     @Operation(summary = "회원 가입", description = "새로운 사용자를 회원으로 등록합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 가입 성공"),
-            @ApiResponse(responseCode = "400", description = "이미 존재하는 이메일입니다."),
-            @ApiResponse(responseCode = "400", description = "중복된 닉네임입니다.")
+            @ApiResponse(responseCode = "201", description = "회원 가입 성공"),
+            @ApiResponse(responseCode = "400", description = "이미 존재하는 이메일 또는 중복된 닉네임입니다.")
     })
     public ResponseEntity<User> signUp(
             @Valid @RequestBody User user
     ) {
-        userService.saveUser(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        User savedUser = userService.saveUser(user);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/withdrawal")
     @Operation(summary = "회원 탈퇴", description = "회원을 탈퇴 처리합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"),
             @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없습니다.")
 })
-    public void withdrawMembership(
-            @RequestParam("userId") Long userId
-    ) {
-        userService.deleteMember(userId);
+    public ResponseEntity<Void> withdrawMembership() {
+        userService.deleteMember();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

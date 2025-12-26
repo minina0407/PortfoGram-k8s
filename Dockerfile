@@ -14,7 +14,7 @@ RUN chmod +x /home/gradle/src/gradlew
 WORKDIR /home/gradle/src
 RUN gradle build -x test --no-daemon
 
-FROM  openjdk:17-slim
+FROM eclipse-temurin:17-jre-focal
 ENV JAVA_OPTS "-Dspring.config.location=src/main/resources/application.properties"
 COPY --from=BUILD /home/gradle/src/build/libs/*.jar /app.jar
 COPY --from=DOWNLOAD /tmp/opentelemetry-javaagent.jar /opentelemetry-javaagent.jar

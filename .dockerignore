@@ -1,3 +1,4 @@
+# Backend build artifacts
 target/
 build/
 
@@ -22,14 +23,33 @@ build/
 *.iml
 *.ipr
 *.iws
+.vscode/
 
+# Git
+.git/
+.gitignore
 
 # Operating system files
 .DS_Store
 Thumbs.db
 
-
-# Compiled source #
+# Compiled source
 *.class
 *.o
 *.obj
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation
+README.md
+*.md
+
+# Docker files (except Dockerfile)
+docker-compose*.yml
+.dockerignore
+

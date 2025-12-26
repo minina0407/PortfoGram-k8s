@@ -40,7 +40,7 @@ public class PortfolioService {
     private final FollowService followService;
 
     @Transactional
-    public void savePortfolio(String content, List<MultipartFile> imageFiles) {
+    public Portfolio savePortfolio(String content, List<MultipartFile> imageFiles) {
         if (content == null || content.trim().isEmpty()) {
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "컨텐츠 내용을 입력해주세요");
         }
@@ -71,6 +71,8 @@ public class PortfolioService {
 
         List<Long> followerIds = followService.getFollowerIds(user.getId());
         cacheNewPortfolioForFollowers(savedPortfolioEntity.getId().toString(), followerIds, savedPortfolioEntity.getCreatedAt().getTime());
+
+        return Portfolio.fromEntity(savedPortfolioEntity);
     }
 
     private void cacheLatestPortfolioForUser(String userId, Long portfolioId) {
@@ -146,29 +148,35 @@ public class PortfolioService {
     }
 
     @Transactional
-    public void updatePortfolio(Long id, Portfolio portfolioRequest) {
+    public Portfolio updatePortfolio(Long id, Portfolio portfolioRequest) {
+        UserEntity user = userService.getMyUserWithAuthorities();
         PortfolioEntity portfolioEntity = portfolioRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "포트폴리오를 찾을 수 없습니다."));
+
+        if (!portfolioEntity.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException(ExceptionEnum.RESPONSE_UNAUTHORIZED, "포트폴리오를 수정할 권한이 없습니다.");
+        }
 
         if (portfolioRequest.getContent() != null && !portfolioRequest.getContent().isEmpty()) {
             // 게시글 내용 업데이트만 가능하게 함
             portfolioEntity.updateContent(portfolioRequest.getContent());
-            portfolioRepository.save(portfolioEntity);
-        }
-        if (portfolioRequest.getContent() == null && portfolioRequest.getContent().isEmpty())
+            PortfolioEntity updatedPortfolio = portfolioRepository.save(portfolioEntity);
+            return Portfolio.fromEntity(updatedPortfolio);
+        } else {
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_MISSING, "컨텐츠가 없습니다.");
-
-
+        }
     }
 
     @Transactional
     public void deletePortfolio(Long id) {
+        UserEntity user = userService.getMyUserWithAuthorities();
         PortfolioEntity portfolioEntity = portfolioRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "프토폴리오를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "포트폴리오를 찾을 수 없습니다."));
+
+        if (!portfolioEntity.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException(ExceptionEnum.RESPONSE_UNAUTHORIZED, "포트폴리오를 삭제할 권한이 없습니다.");
+        }
 
         portfolioRepository.delete(portfolioEntity);
     }
-
-
-
 }

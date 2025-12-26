@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
 
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler  {
         logger.error("Exception",e);
         ExceptionEnum code = ExceptionEnum.REQUEST_PARAMETER_MISSING;
         return new ResponseEntity<>(response(code, code.getReason()), code.getStatus());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Response> NoResourceFoundException(NoResourceFoundException e) {
+        ExceptionEnum code = ExceptionEnum.RESPONSE_NOT_FOUND;
+        return new ResponseEntity<>(response(code, "요청한 리소스를 찾을 수 없습니다."), code.getStatus());
     }
 
     @ExceptionHandler(BaseException.class)
@@ -59,6 +66,7 @@ public class GlobalExceptionHandler  {
 
         return new ResponseEntity<>(response(code,e.getMessage()),  code.getStatus());
     }
+
 
     Response response(ExceptionEnum code, String message) {
         return Response.builder()

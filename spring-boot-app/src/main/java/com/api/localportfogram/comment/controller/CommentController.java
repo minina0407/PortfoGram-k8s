@@ -21,12 +21,17 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
 @Tag(name = "댓글 API", description = "댓글 관련 API")
 public class CommentController {
     private final CommentService commentService;
     private final ReplyService replyService;
+
+    public CommentController(CommentService commentService, ReplyService replyService) {
+        this.commentService = commentService;
+        this.replyService = replyService;
+    }
 
     @GetMapping("/{commentId}/replies")
     @Operation(summary = "댓글의 답변 조회", description = "특정 댓글에 대한 답변을 조회합니다.")
@@ -57,15 +62,15 @@ public class CommentController {
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @Operation(summary = "댓글 삭제", description = "특정 댓글을 삭제 합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "댓글 삭제 성공"),
+            @ApiResponse(responseCode = "204", description = "댓글 삭제 성공"),
             @ApiResponse(responseCode = "404", description = "댓글을 찾을 수 없습니다.")
     })
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
