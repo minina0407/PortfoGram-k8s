@@ -1,19 +1,9 @@
-# LocalPortfoGram
+# PortfoGram
 
-LocalPortfoGram은 포트폴리오 공유 플랫폼입니다. 사용자들이 자신의 프로젝트와 작품을 공유하고, 다른 사용자들과 소통할 수 있는 소셜 미디어 스타일의 웹 애플리케이션입니다.
+PortfoGram은 포트폴리오 공유 플랫폼입니다. 사용자들이 자신의 프로젝트와 작품을 공유하고, 다른 사용자들과 소통할 수 있는 소셜 미디어 스타일의 웹 애플리케이션입니다.
 
 ## 🚀 기술 스택
 
-### Frontend
-
-- **React 18** - 사용자 인터페이스 구축
-- **TypeScript** - 타입 안전성 보장
-- **Styled Components** - CSS-in-JS 스타일링
-- **React Router** - 클라이언트 사이드 라우팅
-- **React Query** - 서버 상태 관리
-- **React Hook Form** - 폼 관리
-- **Framer Motion** - 애니메이션
-- **Axios** - HTTP 클라이언트
 
 ### Backend
 
@@ -22,7 +12,6 @@ LocalPortfoGram은 포트폴리오 공유 플랫폼입니다. 사용자들이 �
 - **Spring Data JPA** - 데이터 접근 계층
 - **MySQL** - 관계형 데이터베이스
 - **Redis** - 캐싱 및 세션 관리
-- **JWT** - 토큰 기반 인증
 
 ### DevOps & Monitoring
 
@@ -39,17 +28,6 @@ LocalPortfoGram은 포트폴리오 공유 플랫폼입니다. 사용자들이 �
 
 ```
 localportfogram/
-├── frontend/                 # React 프론트엔드
-│   ├── public/              # 정적 파일
-│   ├── src/                 # 소스 코드
-│   │   ├── api/            # API 클라이언트
-│   │   ├── components/     # React 컴포넌트
-│   │   ├── contexts/       # React Context
-│   │   ├── pages/          # 페이지 컴포넌트
-│   │   ├── styles/         # 글로벌 스타일
-│   │   └── types/          # TypeScript 타입 정의
-│   ├── package.json        # 프론트엔드 의존성
-│   └── tsconfig.json       # TypeScript 설정
 ├── spring-boot-app/         # Spring Boot 백엔드
 │   ├── src/main/java/      # Java 소스 코드
 │   ├── src/main/resources/ # 설정 파일
@@ -64,7 +42,6 @@ localportfogram/
 
 ### Prerequisites
 
-- Node.js 18+
 - Java 17+
 - Docker & Docker Compose
 - MySQL 8.0+
@@ -72,17 +49,7 @@ localportfogram/
 
 ### 로컬 개발 환경
 
-#### 1. 프론트엔드 실행
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-프론트엔드는 `http://localhost:3000`에서 실행됩니다.
-
-#### 2. 백엔드 실행
+#### 1. 백엔드 실행
 
 ```bash
 cd spring-boot-app
@@ -96,14 +63,11 @@ cd spring-boot-app
 #### 개발 환경
 
 ```bash
-# 프론트엔드만 실행
-docker-compose up frontend
 
 # 백엔드만 실행
 docker-compose up backend
 
-# 전체 애플리케이션 실행
-docker-compose up
+
 ```
 
 #### 프로덕션 빌드
@@ -152,13 +116,6 @@ docker run -p 80:80 -p 8080:8080 localportfogram
 - `PUT /api/v1/replies/{id}` - 답글 수정
 - `DELETE /api/v1/replies/{id}` - 답글 삭제
 
-### 채팅 (Chat)
-
-- `POST /api/chat/rooms` - 채팅방 생성
-- `POST /api/chat/rooms/{id}/join` - 채팅방 입장
-- `POST /api/chat/rooms/{id}/messages` - 메시지 전송
-- `GET /api/chat/rooms/{id}/messages` - 메시지 조회
-
 ### 이미지 (Image)
 
 - `POST /api/v1/image` - 이미지 업로드
@@ -181,37 +138,9 @@ docker run -p 80:80 -p 8080:8080 localportfogram
 - ✅ 댓글 및 답글
 - ✅ 무한 스크롤
 
-### 채팅 기능
-
-- ✅ 실시간 채팅
-- ✅ 채팅방 생성 및 입장
-- ✅ 메시지 전송 및 조회
-
-### UI/UX 기능
-
-- ✅ 반응형 디자인
-- ✅ 다크/라이트 모드
-- ✅ 부드러운 애니메이션
-- ✅ 로딩 상태 표시
-- ✅ 에러 처리
 
 ## 🔧 개발 가이드
 
-### 프론트엔드 개발
-
-```bash
-# 개발 서버 실행
-npm start
-
-# 빌드
-npm run build
-
-# 테스트
-npm test
-
-# 린트 검사
-npm run lint
-```
 
 ### 백엔드 개발
 
@@ -225,11 +154,6 @@ npm run lint
 # 테스트
 ./gradlew test
 ```
-
-### 코드 스타일
-
-- 프론트엔드: ESLint + Prettier
-- 백엔드: Checkstyle
 
 ## 🚀 배포
 
@@ -274,23 +198,7 @@ kubectl apply -f k8s/
 
 - Swagger UI: `http://localhost:8080/swagger-ui/`
 
-## 🤝 기여하기
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
-## 📝 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
-
-## 📞 문의
-
-프로젝트에 대한 문의사항이 있으시면 이슈를 생성해 주세요.
-
----
-
-**LocalPortfoGram** - 포트폴리오 공유의 새로운 경험을 만들어갑니다! 🎨✨
 
