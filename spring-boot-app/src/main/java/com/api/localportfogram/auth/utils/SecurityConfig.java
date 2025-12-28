@@ -15,19 +15,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity // @EnableGlobalMethodSecurity is deprecated
+@EnableMethodSecurity
 public class SecurityConfig {
+
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CorsFilter corsFilter;
 
-    // Swagger-ui v3 경로
     private static final String[] SWAGGER_URL_PATHS = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -43,8 +46,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(corsFilter)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ⭐ CORS 통합
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class
@@ -52,15 +57,12 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                                // Swagger UI 경로 허용
                         .requestMatchers(SWAGGER_URL_PATHS).permitAll()
-                                // 기존의 다른 허용 경로들
-                        //          .anyRequest().permitAll()
-                        .requestMatchers("/api/v1/portfolios/**").permitAll()
-                        .requestMatchers("/api/v1/**").permitAll()
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/users").permitAll() // 예: 로그인, 회원가입
-                        .requestMatchers("/ws/**", "/actuator/**").permitAll()
-                        // 나머지 요청은 인증 필요
+                        .requestMatchers(
+                                "/api/v1/**",
+                                "/ws/**",
+                                "/actuator/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
@@ -68,7 +70,22 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 );
 
-
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+        ));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
