@@ -13,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class CommentEntity{
 
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<ReplyEntity> replies ;
+    private List<ReplyEntity> replies = new ArrayList<>();
 
 
     @Builder
@@ -56,7 +57,10 @@ public class CommentEntity{
         this.portfolio= portfolio;
         this.content = content;
         this.createdAt = createdAt;
-        this.replies = replies;
+        this.replies = new ArrayList<>();
+        if (replies != null) {
+            this.replies.addAll(replies);
+        }
     }
     public void setContent(String content){
         this.content = content;
@@ -71,4 +75,3 @@ public class CommentEntity{
                 .build();
     }
 }
-
