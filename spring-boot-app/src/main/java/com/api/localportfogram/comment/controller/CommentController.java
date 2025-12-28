@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-//@RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
 @Tag(name = "댓글 API", description = "댓글 관련 API")
 public class CommentController {
@@ -31,6 +29,18 @@ public class CommentController {
     public CommentController(CommentService commentService, ReplyService replyService) {
         this.commentService = commentService;
         this.replyService = replyService;
+    }
+
+    @PostMapping
+    @Operation(summary = "댓글 생성", description = "새로운 댓글을 작성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "댓글 생성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "404", description = "포트폴리오를 찾을 수 없습니다.")
+    })
+    public ResponseEntity<Comment> createComment(@Valid @RequestBody Comment comment) {
+        Comment createdComment = commentService.createComment(comment);
+        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
     @GetMapping("/{commentId}/replies")

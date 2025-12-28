@@ -6,7 +6,11 @@ import com.api.localportfogram.comment.entity.CommentEntity;
 import com.api.localportfogram.comment.repository.CommentRepository;
 import com.api.localportfogram.exception.dto.BadRequestException;
 import com.api.localportfogram.exception.dto.ExceptionEnum;
+import com.api.localportfogram.portfolio.entity.PortfolioEntity;
+import com.api.localportfogram.portfolio.repository.PortfolioRepository;
 import com.api.localportfogram.portfolio.service.PortfolioService;
+import com.api.localportfogram.user.entity.UserEntity;
+import com.api.localportfogram.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PortfolioService portfolioService;
+    private final UserService userService;
+    private final PortfolioRepository portfolioRepository;
 
 
     @Transactional(readOnly = true)
@@ -30,7 +36,13 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         if (commentList.isEmpty()) {
-            throw new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "댓글이 없습니다.");
+            // 댓글이 없는 것은 에러가 아님. 빈 리스트 반환
+            return Comments.builder()
+                    .comments(java.util.Collections.emptyList())
+                    .totalPages(0)
+                    .totalElements(0)
+                    .total(0)
+                    .build();
         }
 
         Comments comments = Comments.builder()
@@ -47,6 +59,26 @@ public class CommentService {
     public CommentEntity getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "댓글을 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public Comment createComment(Comment commentDto) {
+        if (commentDto.getContent() == null || commentDto.getContent().trim().isEmpty()) {
+            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "댓글 내용을 입력해주세요.");
+        }
+
+        UserEntity user = userService.getMyUserWithAuthorities();
+        PortfolioEntity portfolio = portfolioRepository.findById(commentDto.getPortfolioId())
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND, "포트폴리오를 찾을 수 없습니다."));
+
+        CommentEntity commentEntity = CommentEntity.builder()
+                .content(commentDto.getContent())
+                .user(user)
+                .portfolio(portfolio)
+                .build();
+
+        CommentEntity savedComment = commentRepository.save(commentEntity);
+        return Comment.fromEntity(savedComment);
     }
 
     @Transactional

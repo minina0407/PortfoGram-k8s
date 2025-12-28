@@ -42,10 +42,11 @@ public class PortfolioEntity {
     private int likeCount;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PortfolioImageEntity> portfolioImages;
+    private List<PortfolioImageEntity> portfolioImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> comments ;
+    private List<CommentEntity> comments = new ArrayList<>();
+
     @Builder
     public PortfolioEntity(Long id, UserEntity user, String content, Date createdAt, int likeCount, List<PortfolioImageEntity> portfolioImages, List<CommentEntity> comments) {
         this.id = id;
@@ -53,15 +54,23 @@ public class PortfolioEntity {
         this.content = content;
         this.createdAt = createdAt;
         this.likeCount = likeCount;
-        this.comments = comments;
-        this.portfolioImages = new ArrayList<>(); // Initialize the portfolioImages list
+
+        this.comments = new ArrayList<>();
+        if (comments != null) {
+            this.comments.addAll(comments);
+        }
+
+        this.portfolioImages = new ArrayList<>();
         if (portfolioImages != null) {
             this.portfolioImages.addAll(portfolioImages);
         }
     }
 
     public void addImage(PortfolioImageEntity portfolioImageEntity) {
-        portfolioImages.add(portfolioImageEntity);
+        if (this.portfolioImages == null) {
+            this.portfolioImages = new ArrayList<>();
+        }
+        this.portfolioImages.add(portfolioImageEntity);
         portfolioImageEntity.setPost(this);
     }
 
