@@ -1,5 +1,6 @@
 package com.api.localportfogram.portfolio.controller;
 import com.api.localportfogram.Image.service.PortfolioImageService;
+import com.api.localportfogram.comment.dto.Comment;
 import com.api.localportfogram.comment.dto.Comments;
 import com.api.localportfogram.comment.service.CommentService;
 import com.api.localportfogram.portfolio.dto.Portfolio;
@@ -81,6 +82,29 @@ public class PortfolioController {
     ) {
         Comments comments = commentService.getCommentsByPortfolioId(portfolioId, pageable);
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @PostMapping("/{portfolioId}/comments")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @Operation(summary = "포트폴리오 댓글 작성", description = "특정 포트폴리오에 댓글을 작성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "댓글 작성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다."),
+            @ApiResponse(responseCode = "404", description = "포트폴리오를 찾을 수 없습니다.")
+    })
+    public ResponseEntity<Comment> createComment(
+            @PathVariable("portfolioId") Long portfolioId,
+            @Valid @RequestBody Comment comment
+    ) {
+
+        Comment commentToCreate = Comment.builder()
+                .content(comment.getContent())
+                .portfolioId(portfolioId)
+                .build();
+
+        Comment createdComment = commentService.createComment(commentToCreate);
+        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
