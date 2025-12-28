@@ -46,9 +46,12 @@ public class CommentEntity{
     private Date createdAt;
 
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReplyEntity> replies = new ArrayList<>();
 
+    public List<ReplyEntity> getReplies() {
+        return replies;
+    }
 
     @Builder
     public CommentEntity(Long id, UserEntity user, PortfolioEntity portfolio, String content, Date createdAt, List<ReplyEntity>replies) {
@@ -62,6 +65,7 @@ public class CommentEntity{
             this.replies.addAll(replies);
         }
     }
+
     public void setContent(String content){
         this.content = content;
     }
@@ -74,4 +78,6 @@ public class CommentEntity{
                 .createdAt(commentEntity.getCreatedAt())
                 .build();
     }
+
 }
+
