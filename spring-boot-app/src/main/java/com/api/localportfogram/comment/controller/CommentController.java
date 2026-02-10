@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/v1/comments")
 @Tag(name = "댓글 API", description = "댓글 관련 API")
@@ -44,14 +43,13 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}/replies")
-    @Operation(summary = "댓글의 답변 조회", description = "특정 댓글에 대한 답변을 조회합니다.")
+    @Operation(summary = "댓글의 답변 조회", description = "특정 댓글에 대한 답변을 조회합니다!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "답변 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "댓글을 찾을 수 없습니다.")})
+            @ApiResponse(responseCode = "404", description = "댓글을 찾을 수 없습니다.") })
     public ResponseEntity<Page<Reply>> getRepliesByCommentId(
             @PathVariable("commentId") Long commentId,
-            @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+            @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Reply> replies = replyService.getRepliesByCommentId(commentId, pageable);
         return new ResponseEntity<>(replies, HttpStatus.OK);
     }
@@ -66,8 +64,7 @@ public class CommentController {
     })
     public ResponseEntity<Comment> updateComment(
             @PathVariable("commentId") Long commentId,
-            @Valid @RequestBody Comment comment
-    ) {
+            @Valid @RequestBody Comment comment) {
         Comment updatedComment = commentService.updateComment(commentId, comment);
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
