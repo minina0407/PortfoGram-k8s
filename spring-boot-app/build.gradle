@@ -55,6 +55,7 @@ dependencies {
 
 
     implementation "io.micrometer:micrometer-registry-prometheus" // 버전은 BOM이 관리
+    implementation "io.micrometer:micrometer-tracing-bridge-otel" // Exemplar: metrics → trace 연결
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
