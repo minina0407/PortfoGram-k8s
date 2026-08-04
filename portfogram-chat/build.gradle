@@ -1,0 +1,14 @@
+apply plugin: 'org.springframework.boot'
+
+jar { enabled = false }
+
+bootRun {
+    args = ["--spring.profiles.active=local"]
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    testImplementation 'org.springframework.security:spring-security-test'
+}

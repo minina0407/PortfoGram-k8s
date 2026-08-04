@@ -1,0 +1,6 @@
+rootProject.name = 'portfogram'
+include 'common'
+include 'portfogram-api'
+include 'portfogram-auth'
+include 'portfogram-chat'
+include 'portfogram-batch'
