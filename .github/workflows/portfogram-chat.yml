@@ -10,6 +10,7 @@ on:
     paths:
       - 'portfogram-chat/**'
       - 'common/**'
+  workflow_dispatch:
 
 env:
   DOCKER_REGISTRY: docker.io
@@ -39,6 +40,7 @@ jobs:
           context: .
           file: ./portfogram-chat/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE_REPO }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
