@@ -14,6 +14,7 @@ import com.api.localportfogram.portfolio.repository.PortfolioRepository;
 import com.api.localportfogram.user.entity.UserEntity;
 import com.api.localportfogram.user.service.FollowService;
 import com.api.localportfogram.user.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,7 @@ public class PortfolioService {
     private final RedisTemplate redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final FollowService followService;
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public Portfolio savePortfolio(String content, List<MultipartFile> imageFiles) {
@@ -110,7 +112,9 @@ public class PortfolioService {
     @Transactional(readOnly = true)
     public Portfolio getPortfolioById(Long portfolioId) {
         String redisKey = "portfolio:" + portfolioId;
-        Portfolio portfolio = (Portfolio) redisTemplate.opsForValue().get(redisKey);
+        // 값 직렬화에 타입 정보가 없어 캐시 적중 시 LinkedHashMap으로 읽히므로 Portfolio로 변환
+        Object cached = redisTemplate.opsForValue().get(redisKey);
+        Portfolio portfolio = cached == null ? null : objectMapper.convertValue(cached, Portfolio.class);
 
         if (portfolio == null) {
             PortfolioEntity portfolioEntity = portfolioRepository.findPortfolioEntityById(portfolioId)
