@@ -43,7 +43,7 @@ public class RedisConfig {
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(fromSerializer(new Jackson2JsonRedisSerializer<>(Object.class)))
+                .serializeValuesWith(fromSerializer(new Jackson2JsonRedisSerializer<>(objectMapper(), Object.class)))
                 .entryTtl(Duration.ofMinutes(3L)); //임시 설정값
 
         return RedisCacheManager.RedisCacheManagerBuilder
@@ -71,8 +71,8 @@ public class RedisConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
         // Value Serializer configuration
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper(), Object.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper(), Object.class));
 
         return redisTemplate;
     }
@@ -88,8 +88,8 @@ public class RedisConfig {
         StringredisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
         // Value Serializer configuration
-        StringredisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-        StringredisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+        StringredisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper(), Object.class));
+        StringredisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(objectMapper(), Object.class));
 
         return StringredisTemplate;
     }
